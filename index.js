@@ -74,7 +74,7 @@ class RustPlugin {
       ""
     ).split(/\s+/);
     const targetArgs = MUSL_PLATFORMS.includes(platform)
-      ? ["--target", "x86_64-unknown-linux-gnu"]
+      ? ["--target", "aarch64-unknown-linux-musl"]
       : [];
     return [
       ...defaultArgs,
@@ -91,14 +91,14 @@ class RustPlugin {
         ? {
             RUSTFLAGS: (env["RUSTFLAGS"] || "") + " -Clinker=rust-lld",
             TARGET_CC: "rust-lld",
-            CC_x86_64_unknown_linux_musl: "rust-lld",
+            CC_aarch64_unknown_linux_musl: "rust-lld",
           }
         : "darwin" === platform
         ? {
             RUSTFLAGS:
-              (env["RUSTFLAGS"] || "") + " -Clinker=x86_64-linux-gnu-gcc",
-            TARGET_CC: "x86_64-linux-gnu-gcc",
-            CC_x86_64_unknown_linux_musl: "x86_64-linux-gnu-gcc",
+              (env["RUSTFLAGS"] || "") + " -Clinker=aarch64-linux-musl-gcc",
+            TARGET_CC: "aarch64-linux-musl-gcc",
+            CC_aarch64_unknown_linux_musl: "aarch64-linux-musl-gcc",
           }
         : {};
     return {
@@ -110,7 +110,7 @@ class RustPlugin {
   localSourceDir(profile, platform) {
     let executable = "target";
     if (MUSL_PLATFORMS.includes(platform)) {
-      executable = path.join(executable, "x86_64-unknown-linux-gnu");
+      executable = path.join(executable, "aarch64-unknown-linux-musl");
     }
     return path.join(executable, profile !== "dev" ? "release" : "debug");
   }
